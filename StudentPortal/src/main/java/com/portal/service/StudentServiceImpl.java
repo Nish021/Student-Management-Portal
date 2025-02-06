@@ -40,7 +40,7 @@ public class StudentServiceImpl implements StudentService{
 	
 
 	@Override
-	@Cacheable(value = "students", key = "studentName")
+//	@Cacheable(value = "students", key = "studentName")
 	public List<StudentDto> getStudentsByName(String studentName) {
 		List<Student> studentRecords = studentRepository.getStudentByName(studentName);
 		if(studentRecords.size() == 0) {
@@ -52,7 +52,7 @@ public class StudentServiceImpl implements StudentService{
 	}
 
 	@Override
-	@CachePut(value = "students", key = "#studentData.id")
+//	@CachePut(value = "students", key = "#studentData.id")
 	public StudentDto updateStudentRecord(StudentDto studentData) {
 		Student student = studentRepository.getStudentById(studentData.getId());
 		if(student == null) {
@@ -75,7 +75,7 @@ public class StudentServiceImpl implements StudentService{
 	}
 
 	@Override
-	@CacheEvict(value = "students", key = "#studentId")
+//	@CacheEvict(value = "students", key = "#studentId")
 	public Boolean deleteStudentRecord(Long studentId) {
 		Student student = studentRepository.getStudentById(studentId);
 		if(student == null) {
