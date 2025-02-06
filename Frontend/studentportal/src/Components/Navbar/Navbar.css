@@ -1,0 +1,9 @@
+.navbar-container{
+    display: flex;
+    justify-content: center;
+    background-color: darkgreen;
+}
+
+.nav-content{
+    color: #fff;
+}
