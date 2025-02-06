@@ -9,6 +9,7 @@ const Dashboard = () => {
     const [currentPage, setCurrentPage] = useState(0);
     const [totalPages, setTotalPages] = useState(0);
     const pageSize = 5;
+    const [deleted, setDeleted] = useState("");
 
     const handleChange = (event) => {
         setSearch(event.target.value);
@@ -21,9 +22,19 @@ const Dashboard = () => {
         .then(response => response.text())
         .then(data => {
             console.log('Student deleted:', data);
+            setDeleted("Student deleted successfully!");
             setStudents(students.filter(student => student.id !== id));
+            setTimeout(() => {
+                setDeleted("");
+            }, 1000);
         })
-        .catch(error => console.error('Error:', error));
+        .catch(error => {
+            console.error('Error:', error)
+            setDeleted("Internal server error");
+            setTimeout(() => {
+                setDeleted("");
+            }, 1000);
+        });
     }
 
     const handleOnClick = (id) => {
@@ -59,7 +70,7 @@ const Dashboard = () => {
     };
 
     useEffect(() => {
-        fetchStudents(currentPage); // Fetch students when component mounts or page changes
+        fetchStudents(currentPage);
     }, [currentPage]);
 
     return (
@@ -121,6 +132,7 @@ const Dashboard = () => {
                     totalPages={totalPages}
                     setCurrentPage={setCurrentPage}
                 />
+                {deleted && <p className="deleted">{deleted}</p>}
             </div>
         </>
     )

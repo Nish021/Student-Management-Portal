@@ -3,6 +3,8 @@ import { useState } from "react";
 
 const AddStudent = () => {
 
+    const [datacreated, setDataCreated] = useState("");
+
     const [formData, setFormData] = useState({
         name: '',
         age: '',
@@ -75,14 +77,18 @@ const AddStudent = () => {
                 .then(response => response.json())
                 .then(data => {
                     console.log('Student added:', data);
-                    // setFormData({
-                    //     name: '',
-                    //     age: '',
-                    //     class: '',
-                    //     phonenumber: '',
-                    // });
+                    setDataCreated("Student record created successfully !");
+                    setFormData({
+                        name: '',
+                        age: '',
+                        class: '',
+                        phonenumber: '',
+                    });
                     })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                    console.error('Error:', error)
+                    setDataCreated("Data creation failed");
+                });
         }
     }
     return (
@@ -151,6 +157,7 @@ const AddStudent = () => {
                         {errors.phonenumber && <p className="error">{errors.phonenumber}</p>}
                         <br />
                         <button type="submit">Add Student</button>
+                        <h2>{datacreated}</h2>
                     </form>
              </div>
             </div>

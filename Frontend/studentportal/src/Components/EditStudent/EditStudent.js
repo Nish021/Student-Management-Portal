@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 const   EditStudent = () => {
 
     const {id} = useParams();
+    const [dataUpdated, setDataUpdated] = useState("");
 
     const [formData, setFormData] = useState({
         name: '',
@@ -32,7 +33,7 @@ const   EditStudent = () => {
             };
             console.log(student);
             fetch(`http://localhost:9080/updateStudentRecord/${id}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -41,6 +42,7 @@ const   EditStudent = () => {
                 .then(response => response.json())
                 .then(data => {
                     console.log('Student added:', data);
+                    setDataUpdated("Student updated successfully!");
                     setFormData({
                         name: '',
                         age: '',
@@ -48,13 +50,17 @@ const   EditStudent = () => {
                         phonenumber: '',
                     });
                     })
-                .catch(error => console.error('Error:', error));
+                .catch(error => {
+                console.error('Error:', error);
+                setDataUpdated("Internal server error");
+            });
     }
 
     useEffect(() => {
         fetch(`http://localhost:9080/getStudentById/${id}`)
             .then(response => response.json())
             .then(data => {
+                console.log('Student:', data);
                 setFormData({
                     name: data.name,
                     age: data.age,
@@ -126,7 +132,8 @@ const   EditStudent = () => {
                             </div>
                         </label>
                         <br />
-                        <button type="submit">Updated</button>
+                        <button type="submit">Update the record</button>
+                        <h2>{dataUpdated}</h2>
                     </form>
              </div>
             </div>
