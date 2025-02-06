@@ -3,6 +3,7 @@ package com.portal.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.portal.dto.StudentDto;
@@ -26,21 +28,19 @@ public class StudentController {
 	
 	@PostMapping("/createStudentRecord")
 	public ResponseEntity<StudentDto> createStudentRecord(@Valid @RequestBody StudentDto studentData){
-		StudentDto response = null;
-		response = studentService.createStudentRecord(studentData);
+		StudentDto response = studentService.createStudentRecord(studentData);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
 	}
 	
 	@GetMapping("/getAllStudentRecords")
-	public ResponseEntity<List<StudentDto>> getAllStudentRecords(){
-		List<StudentDto> studentList = null;
-		studentList = studentService.getAllStudentRecords();
+	public ResponseEntity<Page<StudentDto>> getAllStudentRecords(@RequestParam int page, @RequestParam int limit ){
+		Page<StudentDto>  studentList = studentService.getAllStudentRecords(page, limit);
 		return ResponseEntity.ok(studentList);
 	}
 	
-	@GetMapping("/getStudentsByName/{studentName}")
-	public ResponseEntity<List<StudentDto>> getStudentsByName(@PathVariable String studentName){
-		List<StudentDto> studentList = studentService.getStudentsByName(studentName);
+	@GetMapping("/getStudentsByName")
+	public ResponseEntity<Page<StudentDto>> getStudentsByName(@RequestParam String studentName, @RequestParam int page, @RequestParam int limit){
+		Page<StudentDto> studentList = studentService.getStudentsByName(studentName, page, limit);
 		return ResponseEntity.ok(studentList);
 	}
 	

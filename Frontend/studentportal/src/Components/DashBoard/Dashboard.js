@@ -1,10 +1,14 @@
 import { useEffect, useState } from 'react';
 import './Dashboard.css';
 import { Link } from 'react-router-dom';
+import Pagination from '../Pagination/Pagination';
 
 const Dashboard = () => {
     const [students, setStudents] = useState([]);  
     const [search, setSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(0);
+    const [totalPages, setTotalPages] = useState(0);
+    const pageSize = 5;
 
     const handleChange = (event) => {
         setSearch(event.target.value);
@@ -23,28 +27,41 @@ const Dashboard = () => {
     }
 
     const handleOnClick = (id) => {
-        fetch(`http://localhost:9080/getStudentsByName/${search}`, {
+        fetch(`http://localhost:9080/getStudentsByName?studentName=${search}&page=${currentPage}&limit=${pageSize}`, {
             method: 'GET'
         })
         .then(response => response.json())
         .then(data => {
             console.log('Student:', data);
-            setStudents(data);
+            setStudents(data.content);
+            setTotalPages(data.totalPages);
         })
         .catch(error => console.error('Error:', error));
     }
 
-    useEffect(() => {
-        fetch(`http://localhost:9080/getAllStudentRecords`, {
+    const handlePageChange = (page) => {
+        if (page >= 0 && page < totalPages) {
+            setCurrentPage(page);
+        }
+    };
+
+    const fetchStudents = (currentPage) => {
+        fetch(`http://localhost:9080/getAllStudentRecords?page=${currentPage}&limit=${pageSize}`, {
             method: 'GET'
         })
         .then(response => response.json())
         .then(data => {
             console.log('Students:', data);
-            setStudents(data);
+            setStudents(data.content);
+            setTotalPages(data.totalPages);
         })
         .catch(error => console.error('Error:', error));
-    }, []);
+    };
+
+    useEffect(() => {
+        fetchStudents(currentPage); // Fetch students when component mounts or page changes
+    }, [currentPage]);
+
     return (
         <>
             <div className="dashboard-container">
@@ -99,6 +116,11 @@ const Dashboard = () => {
                         </tbody>
                     </table>
                 </div>
+                <Pagination 
+                    currentPage={currentPage}
+                    totalPages={totalPages}
+                    setCurrentPage={setCurrentPage}
+                />
             </div>
         </>
     )

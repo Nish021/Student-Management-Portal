@@ -59,10 +59,10 @@ const AddStudent = () => {
         event.preventDefault();
         if(isValidForm()){
             const student = {
-                name: formData.get("name"),
-                age: formData.get("age"),
-                className: formData.get("class"),
-                phoneNumber: formData.get("phonenumber")
+                name: formData.name,
+                age: formData.age,
+                className: formData.class,
+                phoneNumber: formData.phonenumber
             };
             console.log(student);
             fetch('http://localhost:9080/createStudentRecord', {
@@ -75,12 +75,12 @@ const AddStudent = () => {
                 .then(response => response.json())
                 .then(data => {
                     console.log('Student added:', data);
-                    setFormData({
-                        name: '',
-                        age: '',
-                        class: '',
-                        phonenumber: '',
-                    });
+                    // setFormData({
+                    //     name: '',
+                    //     age: '',
+                    //     class: '',
+                    //     phonenumber: '',
+                    // });
                     })
                 .catch(error => console.error('Error:', error));
         }

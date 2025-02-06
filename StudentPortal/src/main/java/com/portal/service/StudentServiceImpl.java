@@ -7,48 +7,55 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.portal.dto.StudentDto;
 import com.portal.exception.StudentNotFoundException;
 import com.portal.model.Student;
 import com.portal.repository.StudentRepository;
+import com.portal.utils.Utils;
 
 @Service
 public class StudentServiceImpl implements StudentService{
 	
 	@Autowired
-	public StudentRepository studentRepository;
+	StudentRepository studentRepository;
 	
 	@Autowired
-	ModelMapper modelMapper;
+	Utils util;
 	
 	@Override
 	public StudentDto createStudentRecord(StudentDto studentData) {
-		 Student student = convertDtoToEntity(studentData);
+		 Student student = util.convertDtoToEntity(studentData);
 		 Student savedStudent = studentRepository.save(student);
-		 return convertEntityToDto(savedStudent);
+		 return util.convertEntityToDto(savedStudent);
 	}
 
 	@Override
-	public List<StudentDto> getAllStudentRecords() {
-		List<Student> studentRecords = studentRepository.findAll();
-		List<StudentDto> records = studentRecords.stream()
-				.map(data -> convertEntityToDto(data)).toList();
-		return records;
+	public Page<StudentDto> getAllStudentRecords(int page, int limit) {
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<Student> studentRecords = studentRepository.findAll(pageable);
+		List<StudentDto> records = studentRecords.getContent().stream()
+				.map(data -> util.convertEntityToDto(data)).toList();
+		return new PageImpl<>(records, pageable, studentRecords.getTotalElements());
 	}
 	
 
 	@Override
 //	@Cacheable(value = "students", key = "studentName")
-	public List<StudentDto> getStudentsByName(String studentName) {
-		List<Student> studentRecords = studentRepository.getStudentByName(studentName);
-		if(studentRecords.size() == 0) {
+	public Page<StudentDto> getStudentsByName(String studentName, int page, int limit) {
+		Pageable pageable = PageRequest.of(page, limit);
+		Page<Student> studentRecords = studentRepository.getStudentByName(studentName, pageable);
+		if(!studentRecords.hasContent()) {
 			throw new StudentNotFoundException(studentName + " is not present in database");
 		}
 		List<StudentDto> records = studentRecords.stream()
-				.map(data -> convertEntityToDto(data)).toList();
-		return records;
+				.map(data -> util.convertEntityToDto(data)).toList();
+		return new PageImpl<>(records, pageable, studentRecords.getTotalElements());
 	}
 
 	@Override
@@ -71,7 +78,7 @@ public class StudentServiceImpl implements StudentService{
 	        student.setPhoneNumber(studentData.getPhoneNumber());
 	    }
 		studentRepository.save(student);
-		return convertEntityToDto(student);
+		return util.convertEntityToDto(student);
 	}
 	
 	@Override
@@ -80,7 +87,7 @@ public class StudentServiceImpl implements StudentService{
 		if(student == null) {
 			throw new StudentNotFoundException("Student is not present in database");
 		}
-		return convertEntityToDto(student);
+		return util.convertEntityToDto(student);
 	}
 
 	@Override
@@ -92,14 +99,6 @@ public class StudentServiceImpl implements StudentService{
 		}
 		studentRepository.deleteById(studentId);
 		return true;
-	}
-	
-	public StudentDto convertEntityToDto(Student student) {
-		return modelMapper.map(student, StudentDto.class);
-	}
-
-	public Student convertDtoToEntity (StudentDto studentDto) {
-		return modelMapper.map(studentDto, Student.class);
 	}
 
 

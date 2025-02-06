@@ -17,7 +17,7 @@ public class AppConfig {
 		return new ModelMapper();
 	}
 	
-	 @Bean
+	@Bean
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();

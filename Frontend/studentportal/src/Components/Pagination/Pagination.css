@@ -1,0 +1,20 @@
+.pagination{
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.pagination button{
+    padding: 5px 10px;
+    background-color: darkgreen;
+    color: white;
+    border: none;
+    border-radius: 100%;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+.pagination li{
+    list-style: none;
+    display: inline;
+}
