@@ -40,28 +40,24 @@ public class StudentController {
 	
 	@GetMapping("/getStudentsByName/{studentName}")
 	public ResponseEntity<List<StudentDto>> getStudentsByName(@PathVariable String studentName){
-		List<StudentDto> studentList = null;
-		studentList = studentService.getStudentsByName(studentName);
+		List<StudentDto> studentList = studentService.getStudentsByName(studentName);
 		return ResponseEntity.ok(studentList);
 	}
 	
-	@PutMapping("/updateStudentRecord")
-	public ResponseEntity<StudentDto> updateStudentRecord(@RequestBody StudentDto studentData){
-		StudentDto newStudentData = null;
-		newStudentData = studentService.updateStudentRecord(studentData);
+	@PutMapping("/updateStudentRecord/{id}")
+	public ResponseEntity<StudentDto> updateStudentRecord(@PathVariable Long id, @RequestBody StudentDto studentData){
+		studentData.setId(id);
+		StudentDto newStudentData = studentService.updateStudentRecord(studentData);
 		return ResponseEntity.ok(newStudentData);
 	}
 	
 	@DeleteMapping("/deleteStudentRecord/{studentId}")
-	public ResponseEntity<String> deleteStudentRecord(@PathVariable Long studentId){
+	public ResponseEntity<String> deleteStudentRecord(@PathVariable Long studentId) throws Exception{
 		Boolean isDeleted;
-		String response = "";
 		isDeleted = studentService.deleteStudentRecord(studentId);
-		if(isDeleted) {
-			response = "Student record deleted succesfully";
-		}else {
-			response = "Not deleted";
+		if(!isDeleted) {
+			throw new Exception("Student data Not Deleted");
 		}
-		return ResponseEntity.ok(response);
+		return ResponseEntity.ok("Student data is deleted successfully!");
 	}
 }

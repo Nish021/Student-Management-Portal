@@ -4,9 +4,13 @@ import java.util.List;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import com.portal.dto.StudentDto;
+import com.portal.exception.StudentNotFoundException;
 import com.portal.model.Student;
 import com.portal.repository.StudentRepository;
 
@@ -22,7 +26,7 @@ public class StudentServiceImpl implements StudentService{
 	@Override
 	public StudentDto createStudentRecord(StudentDto studentData) {
 		 Student student = convertDtoToEntity(studentData);
-		 Student savedStudent = studentRepository.save(student); // Save entity
+		 Student savedStudent = studentRepository.save(student);
 		 return convertEntityToDto(savedStudent);
 	}
 
@@ -32,37 +36,53 @@ public class StudentServiceImpl implements StudentService{
 		List<StudentDto> records = studentRecords.stream()
 				.map(data -> convertEntityToDto(data)).toList();
 		return records;
-		}
+	}
 	
 
 	@Override
+	@Cacheable(value = "students", key = "studentName")
 	public List<StudentDto> getStudentsByName(String studentName) {
 		List<Student> studentRecords = studentRepository.getStudentByName(studentName);
+		if(studentRecords.size() == 0) {
+			throw new StudentNotFoundException(studentName + " is not present in database");
+		}
 		List<StudentDto> records = studentRecords.stream()
 				.map(data -> convertEntityToDto(data)).toList();
 		return records;
 	}
 
 	@Override
+	@CachePut(value = "students", key = "#studentData.id")
 	public StudentDto updateStudentRecord(StudentDto studentData) {
 		Student student = studentRepository.getStudentById(studentData.getId());
-		if(student != null) {
-			student.setName(studentData.getName());
-			student.setAge(studentData.getAge());
-			student.setClassName(studentData.getClassName());
-			student.setPhoneNumber(studentData.getPhoneNumber());
-			studentRepository.save(student);
+		if(student == null) {
+			throw new StudentNotFoundException(studentData.getName() + " is not present in database");
 		}
+		if (studentData.getName() != null) {
+	        student.setName(studentData.getName());
+	    }
+	    if (studentData.getAge() != null) {
+	        student.setAge(studentData.getAge());
+	    }
+	    if (studentData.getClassName() != null) {
+	        student.setClassName(studentData.getClassName());
+	    }
+	    if (studentData.getPhoneNumber() != null) {
+	        student.setPhoneNumber(studentData.getPhoneNumber());
+	    }
+		studentRepository.save(student);
 		return convertEntityToDto(student);
 	}
 
 	@Override
+	@CacheEvict(value = "students", key = "#studentId")
 	public Boolean deleteStudentRecord(Long studentId) {
-		if(studentRepository.existsById(studentId)) {
-			studentRepository.deleteById(studentId);
-			return true;
+		Student student = studentRepository.getStudentById(studentId);
+		if(student == null) {
+			throw new StudentNotFoundException("Student is not present in database");
 		}
-		return false;
+		studentRepository.deleteById(studentId);
+		return true;
 	}
 	
 	public StudentDto convertEntityToDto(Student student) {
