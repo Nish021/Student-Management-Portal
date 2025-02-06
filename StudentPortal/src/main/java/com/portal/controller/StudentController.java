@@ -51,6 +51,12 @@ public class StudentController {
 		return ResponseEntity.ok(newStudentData);
 	}
 	
+	@GetMapping("/getStudentById/{id}")
+	public ResponseEntity<StudentDto> getStudentById(@PathVariable Long id){
+		StudentDto studentData = studentService.getStudentById(id);
+		return ResponseEntity.ok(studentData);
+	}
+	
 	@DeleteMapping("/deleteStudentRecord/{studentId}")
 	public ResponseEntity<String> deleteStudentRecord(@PathVariable Long studentId) throws Exception{
 		Boolean isDeleted;

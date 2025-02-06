@@ -21,6 +21,34 @@
     font-weight: bold;
 }
 
+td button{
+    margin-right: 5px;
+    width: 90px;
+}
+
+input[type="text"]{
+    padding: 10px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    margin-bottom: 16px;
+}
+
+.dashboard-search{
+    border: 2px solid darkgreen;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    width: 500px;
+    display: flex;
+    justify-content: space-between;
+}
+
+.search-label input{
+    width: 95%;
+    height: 8px;
+    padding: 5px;
+    border: none;
+}
 button a{
     text-decoration: none;
     color: #fff;

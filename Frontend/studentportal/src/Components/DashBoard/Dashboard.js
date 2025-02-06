@@ -4,6 +4,36 @@ import { Link } from 'react-router-dom';
 
 const Dashboard = () => {
     const [students, setStudents] = useState([]);  
+    const [search, setSearch] = useState('');
+
+    const handleChange = (event) => {
+        setSearch(event.target.value);
+    }
+
+    const handleOnDelete = (id) => {
+        fetch(`http://localhost:9080/deleteStudentRecord/${id}`, {
+            method: 'DELETE'
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log('Student deleted:', data);
+            setStudents(students.filter(student => student.id !== id));
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    const handleOnClick = (id) => {
+        fetch(`http://localhost:9080/getStudentsByName/${search}`, {
+            method: 'GET'
+        })
+        .then(response => response.json())
+        .then(data => {
+            console.log('Student:', data);
+            setStudents(data);
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
     useEffect(() => {
         fetch(`http://localhost:9080/getAllStudentRecords`, {
             method: 'GET'
@@ -23,6 +53,22 @@ const Dashboard = () => {
                 </div>
                 <div className="dashboard-header">
                     <h1>Student Dashboard</h1>
+                </div>
+                <div className="dashboard-search">
+                    <div className="search-label">
+                        <input
+                         placeholder="Search by name"
+                         value={search}
+                         onChange={handleChange}
+                         type="text" 
+                         name="name"
+                         ></input>
+                    </div>
+                    <div className='search-button'>
+                        <button
+                        onClick={handleOnClick}
+                        >Search</button>
+                    </div>  
                 </div>
                 <div className="dashboard-table">
                     <table>
@@ -44,7 +90,10 @@ const Dashboard = () => {
                             <td>{student.age}</td>
                             <td>{student.className}</td>
                             <td>{student.phoneNumber}</td>
-                            <td><button>Edit</button> <button>Delete</button></td>
+                            <td>
+                                <button><Link to={`/edit/${student.id}`}>Edit</Link></button>
+                                <button onClick={() => handleOnDelete(student.id)}>Delete</button>
+                            </td>
                             </tr>
                         ))}
                         </tbody>

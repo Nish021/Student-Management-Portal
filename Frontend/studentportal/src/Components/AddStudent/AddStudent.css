@@ -1,27 +1,23 @@
 .add-student-container{  
-    height: 100vh;
+    height: 90vh;
     display: flex ;
     align-items: center;
     justify-content: center;
 }
 
 .add-student{
-    border: 2px solid darkgreen;
-    margin-top: 50px;
-    height: 70vh;
+    height: 94vh;
     width: 70%;
     display: flex;
     justify-content: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .student-form-container {
     width: 100%;
     max-width: 500px; 
-    margin: 0 auto; 
+    margin: 40px auto; 
     padding: 20px;
-    background-color: #f4f4f4;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); 
   }
   
   
@@ -68,3 +64,16 @@
     margin-bottom: 10px;
   }
   
+
+  .row{
+    display: flex;
+    justify-content: space-between;
+  }
+
+
+  .error {
+    color: red;
+    font-size: 12px;
+    display:flex;
+    flex-direction: row-reverse;
+  }

@@ -73,6 +73,15 @@ public class StudentServiceImpl implements StudentService{
 		studentRepository.save(student);
 		return convertEntityToDto(student);
 	}
+	
+	@Override
+	public StudentDto getStudentById(Long id) {
+		Student student = studentRepository.getStudentById(id);
+		if(student == null) {
+			throw new StudentNotFoundException("Student is not present in database");
+		}
+		return convertEntityToDto(student);
+	}
 
 	@Override
 //	@CacheEvict(value = "students", key = "#studentId")
@@ -92,5 +101,6 @@ public class StudentServiceImpl implements StudentService{
 	public Student convertDtoToEntity (StudentDto studentDto) {
 		return modelMapper.map(studentDto, Student.class);
 	}
+
 
 }

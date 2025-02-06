@@ -2,6 +2,7 @@ package com.portal.service;
 
 import java.util.List;
 
+
 import com.portal.dto.StudentDto;
 
 public interface StudentService {
@@ -13,6 +14,8 @@ public interface StudentService {
 	public List<StudentDto> getStudentsByName(String studentName);
 	
 	public StudentDto updateStudentRecord(StudentDto studentData);
+	
+	public StudentDto getStudentById(Long id);
 	
 	public Boolean deleteStudentRecord(Long studentId);
 	
