@@ -4,7 +4,7 @@ import './Pagination.css';
 
 const Pagination = ({ currentPage, totalPages, setCurrentPage }) => {
     const pageNumbers = [];
-    for (let i = 1; i <= totalPages; i++) {
+    for (let i = 0; i <= totalPages; i++) {
         pageNumbers.push(i);
     }
 

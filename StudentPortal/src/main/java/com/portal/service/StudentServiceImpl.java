@@ -111,7 +111,7 @@ public class StudentServiceImpl implements StudentService{
 		Object obj = redisTemplate.opsForHash().get(KEY, studentId);
 		Student student;
 		if (obj != null) {
-		       student = (Student) obj;
+		       student =  util.deserializeStudent((String) obj);
 		}else {
 			student = studentRepository.getStudentById(studentId);
 			if(student == null) {
