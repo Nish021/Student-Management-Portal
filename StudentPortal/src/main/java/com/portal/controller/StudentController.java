@@ -17,7 +17,9 @@ import com.portal.dto.StudentDto;
 import com.portal.service.StudentService;
 
 import jakarta.validation.Valid;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @RestController
 public class StudentController {
 
@@ -60,7 +62,7 @@ public class StudentController {
 		Boolean isDeleted;
 		isDeleted = studentService.deleteStudentRecord(studentId);
 		if(!isDeleted) {
-			throw new Exception("Student data Not Deleted");
+			log.error("Error while deleting student with student ID : {}", studentId);
 		}
 		return ResponseEntity.ok("Student data is deleted successfully!");
 	}

@@ -39,7 +39,14 @@ const Dashboard = () => {
     }
 
     const handleOnClick = (id) => {
-        fetch(`http://localhost:9080/getStudentsByName?studentName=${search}&page=${currentPage}&limit=${pageSize}`, {
+        setSearchError("");
+        let api = "";
+        if(search === ""){
+            api = `http://localhost:9080/getAllStudentRecords?page=${currentPage}&limit=${pageSize}`
+        }else {
+            api = `http://localhost:9080/getStudentsByName?studentName=${search}&page=${currentPage}&limit=${pageSize}`
+        }
+        fetch(api, {
             method: 'GET'
         })
         .then(response => response.json())
